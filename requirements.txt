@@ -1,0 +1,9 @@
+streamlit
+pytube
+openai-whisper
+tensorflow
+pandas
+google-cloud-videointelligence
+speechrecognition
+opencv-python
+torch
