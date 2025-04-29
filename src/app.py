@@ -1,6 +1,9 @@
 import os
 from dotenv import load_dotenv
+
+# Load environment variables from .env file
 load_dotenv()
+
 # Suppress TensorFlow warnings
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -25,7 +28,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 # --- CONFIG ---
 PERSPECTIVE_API_KEY = os.getenv('PERSPECTIVE_API_KEY')
 if not PERSPECTIVE_API_KEY:
-    st.error("⚠️ Perspective API key not found. Please set the PERSPECTIVE_API_KEY environment variable.")
+    st.error("⚠️ Perspective API key not found in .env file. Please add your API key to the .env file.")
     st.stop()
 
 PERSPECTIVE_API_URL = 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' + PERSPECTIVE_API_KEY
