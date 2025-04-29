@@ -23,7 +23,11 @@ from moviepy.editor import VideoFileClip
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # --- CONFIG ---
-PERSPECTIVE_API_KEY = os.getenv('PERSPECTIVE_API_KEY', 'YOUR_API_KEY_HERE')  # Replace with your key or set as env var
+PERSPECTIVE_API_KEY = os.getenv('PERSPECTIVE_API_KEY')
+if not PERSPECTIVE_API_KEY:
+    st.error("⚠️ Perspective API key not found. Please set the PERSPECTIVE_API_KEY environment variable.")
+    st.stop()
+
 PERSPECTIVE_API_URL = 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' + PERSPECTIVE_API_KEY
 PERSPECTIVE_ATTRIBUTES = [
     "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", 
@@ -77,11 +81,15 @@ def load_model_and_predict(text):
 
 # --- PERSPECTIVE API ---
 def get_perspective_attributes(text):
+    if not text or not text.strip():
+        return {attr: 0 for attr in PERSPECTIVE_ATTRIBUTES}
+        
     data = {
         "comment": {"text": text},
         "languages": ["en"],
         "requestedAttributes": {attr: {} for attr in PERSPECTIVE_ATTRIBUTES}
     }
+    
     try:
         response = requests.post(PERSPECTIVE_API_URL, json=data)
         if response.status_code == 200:
@@ -92,10 +100,17 @@ def get_perspective_attributes(text):
                 scores[attr] = score
             return scores
         else:
-            st.error(f"Perspective API error: {response.status_code}")
+            error_msg = f"Perspective API error: {response.status_code}"
+            if response.status_code == 400:
+                error_msg += " - Invalid API key or request format"
+            elif response.status_code == 403:
+                error_msg += " - API key not authorized"
+            elif response.status_code == 429:
+                error_msg += " - Rate limit exceeded"
+            st.error(error_msg)
             return {attr: 0 for attr in PERSPECTIVE_ATTRIBUTES}
     except Exception as e:
-        st.error(f"Perspective API exception: {e}")
+        st.error(f"Perspective API exception: {str(e)}")
         return {attr: 0 for attr in PERSPECTIVE_ATTRIBUTES}
 
 # --- TEXT EXTRACTION HELPERS ---
