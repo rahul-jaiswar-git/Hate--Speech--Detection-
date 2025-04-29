@@ -21,6 +21,7 @@ import tempfile
 import speech_recognition as sr
 import pytesseract
 from moviepy.editor import VideoFileClip
+import time
 
 # Set Tesseract path
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -165,59 +166,90 @@ def extract_text_from_video(uploaded_video):
         st.error(f"Video analysis error: {e}")
         return ""
 
-# --- FRONTEND ---
-def header():
+# --- STYLES ---
+def load_css():
     st.markdown("""
     <style>
+    /* Global Styles */
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #357abd;
+        --success-color: #51cf66;
+        --danger-color: #ff6b6b;
+        --warning-color: #fbc02d;
+        --text-color: #ffffff;
+        --bg-color: #1a1a1a;
+        --card-bg: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Header Styles */
     .header {
         text-align: center;
-        padding: 4rem 0;
-        margin-bottom: 4rem;
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, var(--bg-color) 0%, #2d2d2d 100%);
         border-radius: 15px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
     }
+
+    .header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(74, 144, 226, 0.1) 0%, rgba(53, 122, 189, 0.1) 100%);
+        z-index: 1;
+    }
+
     .logo {
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 1rem;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
         letter-spacing: 1px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 2;
     }
+
     .subtitle {
-        font-size: 1.4rem;
-        color: #ffffff;
-        margin-top: 1rem;
+        font-size: 1.2rem;
+        color: var(--text-color);
+        opacity: 0.9;
         line-height: 1.6;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 2;
     }
-    .container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-    .section {
-        margin: 4rem 0;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 2rem;
+
+    /* Card Styles */
+    .card {
+        background: var(--card-bg);
         border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1rem 0;
         backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .section-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin-bottom: 2rem;
-        text-align: center;
-        color: #ffffff;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
+
+    /* Feature Grid */
     .feature-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
         margin: 3rem 0;
     }
+
     .feature-card {
         text-align: center;
         padding: 2rem;
@@ -227,25 +259,40 @@ def header():
         border: 1px solid rgba(255, 255, 255, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .feature-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
+
     .feature-title {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--text-color);
         margin-bottom: 1rem;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
+
     .feature-description {
-        color: #ffffff;
+        color: var(--text-color);
         line-height: 1.6;
         opacity: 0.9;
     }
+
+    /* Section Styles */
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: var(--text-color);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Button Styles */
     .stButton>button {
-        background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
-        color: #ffffff;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--text-color);
         border: none;
         padding: 0.8rem 2rem;
         border-radius: 25px;
@@ -253,130 +300,238 @@ def header():
         transition: all 0.3s ease;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
     .stButton>button:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
     }
+
+    /* Input Styles */
     .stTextInput>div>div>input {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--card-bg);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #ffffff;
+        color: var(--text-color);
         border-radius: 10px;
         padding: 0.8rem 1rem;
     }
+
     .stTextInput>div>div>input:focus {
-        border-color: #4a90e2;
+        border-color: var(--primary-color);
         box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
     }
-    .stMarkdown {
-        color: #ffffff;
+
+    /* Progress Bar Styles */
+    .progress-bar {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
     }
-    .stProgress>div>div>div {
-        background-color: #4a90e2;
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.3s ease;
     }
-    .stProgress>div>div>div>div {
-        background-color: #357abd;
+
+    /* Tooltip Styles */
+    .tooltip {
+        position: relative;
+        display: inline-block;
     }
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
     }
-    .stTabs [data-baseweb="tab"] {
-        height: 2.5rem;
-        white-space: pre-wrap;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #ffffff;
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
     }
-    .stTabs [aria-selected="true"] {
-        background-color: #4a90e2;
-        color: #ffffff;
+
+    /* Loading Animation */
+    .loading {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .logo {
+            font-size: 2rem;
+        }
+        .subtitle {
+            font-size: 1rem;
+        }
+        .card {
+            padding: 1rem;
+        }
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
     }
     </style>
+    """, unsafe_allow_html=True)
+
+# --- HEADER ---
+def header():
+    st.markdown("""
     <div class="header">
         <div class="logo">Hate Shield AI</div>
         <div class="subtitle">Advanced Content Moderation for a Safer Digital World</div>
     </div>
     """, unsafe_allow_html=True)
 
+# --- LOADING ANIMATION ---
+def show_loading():
+    st.markdown("""
+    <div style="text-align: center; margin: 2rem 0;">
+        <div class="loading"></div>
+        <p style="color: var(--text-color); margin-top: 1rem;">Analyzing content...</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# --- ATTRIBUTE TOOLTIPS ---
+ATTRIBUTE_TOOLTIPS = {
+    "TOXICITY": "Overall measure of how toxic the content is",
+    "SEVERE_TOXICITY": "Extreme levels of toxic content",
+    "IDENTITY_ATTACK": "Content that attacks or insults someone's identity",
+    "INSULT": "Content that is insulting or rude",
+    "PROFANITY": "Content containing profanity or vulgar language",
+    "THREAT": "Content that threatens or suggests violence",
+    "SEXUALLY_EXPLICIT": "Content that is sexually explicit",
+    "OBSCENE": "Content that is obscene or offensive",
+    "FLIRTATION": "Content that is flirtatious or romantic",
+    "SPAM": "Content that appears to be spam or promotional"
+}
+
 def homepage():
     st.markdown("""
-    <div class="container">
-        <div class="section">
-            <div class="section-title">Welcome to Hate Shield AI</div>
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <p style="font-size: 1.3rem; color: #666; line-height: 1.8; max-width: 800px; margin: 0 auto;">
-                    Our AI-powered platform identifies and filters harmful content in real-time across text, images, audio, and video, 
-                    protecting your community and fostering positive online interactions.
-                </p>
+    <div class="card">
+        <div class="section-title">Welcome to Hate Shield AI</div>
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <p style="font-size: 1.3rem; color: var(--text-color); line-height: 1.8; max-width: 800px; margin: 0 auto;">
+                Our AI-powered platform identifies and filters harmful content in real-time across text, images, audio, and video, 
+                protecting your community and fostering positive online interactions.
+            </p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-title">Real-time Analysis</div>
+                <div class="feature-description">Instant detection of harmful content across multiple formats</div>
             </div>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-title">Real-time Analysis</div>
-                    <div class="feature-description">Instant detection of harmful content across multiple formats</div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-title">Multi-format Support</div>
-                    <div class="feature-description">Analyze text, images, audio, and video content</div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-title">Advanced AI</div>
-                    <div class="feature-description">Powered by state-of-the-art machine learning models</div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-title">Multi-format Support</div>
+                <div class="feature-description">Analyze text, images, audio, and video content</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-title">Advanced AI</div>
+                <div class="feature-description">Powered by state-of-the-art machine learning models</div>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-def analyze_content_ui():
+# --- MAIN APP ---
+def main():
+    st.set_page_config(
+        page_title="Hate Shield AI",
+        layout="wide",
+        initial_sidebar_state="collapsed"
+    )
+    
+    # Load CSS
+    load_css()
+    
+    # Hide the sidebar
     st.markdown("""
-    <div class="container">
-        <div class="section">
-            <div class="section-title">Content Analysis</div>
+        <style>
+            section[data-testid="stSidebar"][aria-expanded="true"]{
+                display: none;
+            }
+        </style>
     """, unsafe_allow_html=True)
+    
+    header()
+    homepage()
+    
+    # Content Analysis UI
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Content Analysis</div>', unsafe_allow_html=True)
     
     tabs = st.tabs(["Text", "Image", "Audio", "Video"])
     
     with tabs[0]:
         st.markdown('<div class="upload-section">', unsafe_allow_html=True)
-        st.markdown('<div class="upload-title">Enter or paste text to analyze</div>', unsafe_allow_html=True)
+        st.markdown('<div class="upload-title" style="color: var(--text-color);">Enter or paste text to analyze</div>', unsafe_allow_html=True)
         user_text = st.text_area("", placeholder="Type or paste text here to analyze for harmful content…", height=150)
         if st.button("Analyze Content", key="analyze_text", use_container_width=True):
-            process_and_display_results(user_text)
+            with st.spinner("Analyzing content..."):
+                show_loading()
+                time.sleep(1)  # Simulate loading
+                process_and_display_results(user_text)
         st.markdown('</div>', unsafe_allow_html=True)
             
     with tabs[1]:
         st.markdown('<div class="upload-section">', unsafe_allow_html=True)
-        st.markdown('<div class="upload-title">Upload an image containing text</div>', unsafe_allow_html=True)
+        st.markdown('<div class="upload-title" style="color: var(--text-color);">Upload an image containing text</div>', unsafe_allow_html=True)
         uploaded_image = st.file_uploader("", type=["jpg", "jpeg", "png"])
         if st.button("Analyze Content", key="analyze_image", use_container_width=True) and uploaded_image:
-            text = extract_text_from_image(uploaded_image)
-            process_and_display_results(text)
+            with st.spinner("Analyzing content..."):
+                show_loading()
+                time.sleep(1)  # Simulate loading
+                text = extract_text_from_image(uploaded_image)
+                process_and_display_results(text)
         st.markdown('</div>', unsafe_allow_html=True)
             
     with tabs[2]:
         st.markdown('<div class="upload-section">', unsafe_allow_html=True)
-        st.markdown('<div class="upload-title">Upload an audio file</div>', unsafe_allow_html=True)
+        st.markdown('<div class="upload-title" style="color: var(--text-color);">Upload an audio file</div>', unsafe_allow_html=True)
         uploaded_audio = st.file_uploader("", type=["wav", "mp3", "m4a"])
         if st.button("Analyze Content", key="analyze_audio", use_container_width=True) and uploaded_audio:
-            text = extract_text_from_audio(uploaded_audio)
-            process_and_display_results(text)
+            with st.spinner("Analyzing content..."):
+                show_loading()
+                time.sleep(1)  # Simulate loading
+                text = extract_text_from_audio(uploaded_audio)
+                process_and_display_results(text)
         st.markdown('</div>', unsafe_allow_html=True)
             
     with tabs[3]:
         st.markdown('<div class="upload-section">', unsafe_allow_html=True)
-        st.markdown('<div class="upload-title">Upload a video file</div>', unsafe_allow_html=True)
+        st.markdown('<div class="upload-title" style="color: var(--text-color);">Upload a video file</div>', unsafe_allow_html=True)
         uploaded_video = st.file_uploader("", type=["mp4", "mov", "avi", "mkv"])
         if st.button("Analyze Content", key="analyze_video", use_container_width=True) and uploaded_video:
-            text = extract_text_from_video(uploaded_video)
-            process_and_display_results(text)
+            with st.spinner("Analyzing content..."):
+                show_loading()
+                time.sleep(1)  # Simulate loading
+                text = extract_text_from_video(uploaded_video)
+                process_and_display_results(text)
         st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- RESULTS DISPLAY ---
 def process_and_display_results(text):
@@ -505,27 +660,6 @@ def get_bar_color(score):
         return "#fbc02d"  # yellow
     else:
         return "#388e3c"  # green
-
-# --- MAIN APP ---
-def main():
-    st.set_page_config(
-        page_title="Hate Shield AI",
-        layout="wide",
-        initial_sidebar_state="collapsed"
-    )
-    
-    # Hide the sidebar
-    st.markdown("""
-        <style>
-            section[data-testid="stSidebar"][aria-expanded="true"]{
-                display: none;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-    
-    header()
-    homepage()
-    analyze_content_ui()
 
 if __name__ == "__main__":
     main()
