@@ -33,9 +33,7 @@ if not PERSPECTIVE_API_KEY:
 
 PERSPECTIVE_API_URL = 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' + PERSPECTIVE_API_KEY
 PERSPECTIVE_ATTRIBUTES = [
-    "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", 
-    "SEXUALLY_EXPLICIT", "OBSCENE", "FLIRTATION", "SPAM", "UNSUBSTANTIAL", "HARASSMENT",
-    "HATE_SPEECH", "VIOLENCE", "SELF_HARM"
+    "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", "SEXUALLY_EXPLICIT", "OBSCENE"
 ]
 PERSPECTIVE_THRESHOLD = 0.5
 
@@ -84,15 +82,11 @@ def load_model_and_predict(text):
 
 # --- PERSPECTIVE API ---
 def get_perspective_attributes(text):
-    if not text or not text.strip():
-        return {attr: 0 for attr in PERSPECTIVE_ATTRIBUTES}
-        
     data = {
         "comment": {"text": text},
         "languages": ["en"],
         "requestedAttributes": {attr: {} for attr in PERSPECTIVE_ATTRIBUTES}
     }
-    
     try:
         response = requests.post(PERSPECTIVE_API_URL, json=data)
         if response.status_code == 200:
@@ -103,17 +97,10 @@ def get_perspective_attributes(text):
                 scores[attr] = score
             return scores
         else:
-            error_msg = f"Perspective API error: {response.status_code}"
-            if response.status_code == 400:
-                error_msg += " - Invalid API key or request format"
-            elif response.status_code == 403:
-                error_msg += " - API key not authorized"
-            elif response.status_code == 429:
-                error_msg += " - Rate limit exceeded"
-            st.error(error_msg)
+            st.error(f"Perspective API error: {response.status_code}")
             return {attr: 0 for attr in PERSPECTIVE_ATTRIBUTES}
     except Exception as e:
-        st.error(f"Perspective API exception: {str(e)}")
+        st.error(f"Perspective API exception: {e}")
         return {attr: 0 for attr in PERSPECTIVE_ATTRIBUTES}
 
 # --- TEXT EXTRACTION HELPERS ---
@@ -442,14 +429,6 @@ def process_and_display_results(text):
         height: 100%;
         border-radius: 6px;
     }
-    .category-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #ffffff;
-        margin: 1.5rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
     </style>
     """, unsafe_allow_html=True)
     
@@ -467,30 +446,20 @@ def process_and_display_results(text):
     </div>
     """, unsafe_allow_html=True)
     
-    # Group attributes by category
-    categories = {
-        "Toxicity Metrics": ["TOXICITY", "SEVERE_TOXICITY", "UNSUBSTANTIAL"],
-        "Harmful Content": ["HATE_SPEECH", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT"],
-        "Inappropriate Content": ["SEXUALLY_EXPLICIT", "OBSCENE", "FLIRTATION"],
-        "Safety Concerns": ["VIOLENCE", "SELF_HARM", "HARASSMENT"],
-        "Content Quality": ["SPAM"]
-    }
+    st.markdown('<div style="font-size:1.3rem; margin:1.5rem 0; color:#ffffff;"><b>Detected Attributes:</b></div>', unsafe_allow_html=True)
     
-    for category, attrs in categories.items():
-        st.markdown(f'<div class="category-title">{category}</div>', unsafe_allow_html=True)
-        for attr in attrs:
-            if attr in attr_scores:
-                score = attr_scores.get(attr, 0)
-                color = get_bar_color(score)
-                st.markdown(f"""
-                <div class="attribute-row">
-                    <div class="attribute-name">{attr.replace('_', ' ').title()}</div>
-                    <div class="attribute-score" style="color:{color};">{score*100:.1f}%</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width:{score*100}%; background:{color};"></div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+    for attr in PERSPECTIVE_ATTRIBUTES:
+        score = attr_scores.get(attr, 0)
+        color = get_bar_color(score)
+        st.markdown(f"""
+        <div class="attribute-row">
+            <div class="attribute-name">{attr.replace('_', ' ').title()}</div>
+            <div class="attribute-score" style="color:{color};">{score*100:.1f}%</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:{score*100}%; background:{color};"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
