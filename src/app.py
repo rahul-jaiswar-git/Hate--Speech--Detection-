@@ -36,6 +36,16 @@ PERSPECTIVE_ATTRIBUTES = [
     "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", 
     "SEXUALLY_EXPLICIT", "OBSCENE", "FLIRTATION", "SPAM"
 ]
+
+# Core attributes that determine toxicity
+CORE_TOXICITY_ATTRIBUTES = [
+    "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", 
+    "SEXUALLY_EXPLICIT", "OBSCENE"
+]
+
+# Additional attributes for extra information
+ADDITIONAL_ATTRIBUTES = ["FLIRTATION", "SPAM"]
+
 PERSPECTIVE_THRESHOLD = 0.5
 
 # Function to load the model and tokenizer
@@ -377,8 +387,9 @@ def process_and_display_results(text):
     # Get Perspective API attributes
     attr_scores = get_perspective_attributes(text)
     
-    # Determine if content is toxic
-    hate_detected = max(attr_scores.values()) > PERSPECTIVE_THRESHOLD
+    # Determine if content is toxic based only on core attributes
+    core_scores = {attr: attr_scores[attr] for attr in CORE_TOXICITY_ATTRIBUTES}
+    hate_detected = max(core_scores.values()) > PERSPECTIVE_THRESHOLD
     
     st.markdown("""
     <style>
@@ -430,6 +441,14 @@ def process_and_display_results(text):
         height: 100%;
         border-radius: 6px;
     }
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
     </style>
     """, unsafe_allow_html=True)
     
@@ -447,9 +466,24 @@ def process_and_display_results(text):
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown('<div style="font-size:1.3rem; margin:1.5rem 0; color:#ffffff;"><b>Detected Attributes:</b></div>', unsafe_allow_html=True)
+    # Display core toxicity attributes
+    st.markdown('<div class="section-title">Toxicity Analysis</div>', unsafe_allow_html=True)
+    for attr in CORE_TOXICITY_ATTRIBUTES:
+        score = attr_scores.get(attr, 0)
+        color = get_bar_color(score)
+        st.markdown(f"""
+        <div class="attribute-row">
+            <div class="attribute-name">{attr.replace('_', ' ').title()}</div>
+            <div class="attribute-score" style="color:{color};">{score*100:.1f}%</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:{score*100}%; background:{color};"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
-    for attr in PERSPECTIVE_ATTRIBUTES:
+    # Display additional attributes separately
+    st.markdown('<div class="section-title">Additional Metrics</div>', unsafe_allow_html=True)
+    for attr in ADDITIONAL_ATTRIBUTES:
         score = attr_scores.get(attr, 0)
         color = get_bar_color(score)
         st.markdown(f"""
