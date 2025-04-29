@@ -363,21 +363,6 @@ def load_css():
         opacity: 1;
     }
 
-    /* Loading Animation */
-    .loading {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top-color: var(--primary-color);
-        animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
     /* Mobile Responsive */
     @media (max-width: 768px) {
         .logo {
@@ -402,15 +387,6 @@ def header():
     <div class="header">
         <div class="logo">Hate Shield AI</div>
         <div class="subtitle">Advanced Content Moderation for a Safer Digital World</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# --- LOADING ANIMATION ---
-def show_loading():
-    st.markdown("""
-    <div style="text-align: center; margin: 2rem 0;">
-        <div class="loading"></div>
-        <p style="color: var(--text-color); margin-top: 1rem;">Analyzing content...</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -489,10 +465,7 @@ def main():
         st.markdown('<div class="upload-title" style="color: var(--text-color);">Enter or paste text to analyze</div>', unsafe_allow_html=True)
         user_text = st.text_area("", placeholder="Type or paste text here to analyze for harmful content…", height=150)
         if st.button("Analyze Content", key="analyze_text", use_container_width=True):
-            with st.spinner("Analyzing content..."):
-                show_loading()
-                time.sleep(1)  # Simulate loading
-                process_and_display_results(user_text)
+            process_and_display_results(user_text)
         st.markdown('</div>', unsafe_allow_html=True)
             
     with tabs[1]:
@@ -500,11 +473,8 @@ def main():
         st.markdown('<div class="upload-title" style="color: var(--text-color);">Upload an image containing text</div>', unsafe_allow_html=True)
         uploaded_image = st.file_uploader("", type=["jpg", "jpeg", "png"])
         if st.button("Analyze Content", key="analyze_image", use_container_width=True) and uploaded_image:
-            with st.spinner("Analyzing content..."):
-                show_loading()
-                time.sleep(1)  # Simulate loading
-                text = extract_text_from_image(uploaded_image)
-                process_and_display_results(text)
+            text = extract_text_from_image(uploaded_image)
+            process_and_display_results(text)
         st.markdown('</div>', unsafe_allow_html=True)
             
     with tabs[2]:
@@ -512,11 +482,8 @@ def main():
         st.markdown('<div class="upload-title" style="color: var(--text-color);">Upload an audio file</div>', unsafe_allow_html=True)
         uploaded_audio = st.file_uploader("", type=["wav", "mp3", "m4a"])
         if st.button("Analyze Content", key="analyze_audio", use_container_width=True) and uploaded_audio:
-            with st.spinner("Analyzing content..."):
-                show_loading()
-                time.sleep(1)  # Simulate loading
-                text = extract_text_from_audio(uploaded_audio)
-                process_and_display_results(text)
+            text = extract_text_from_audio(uploaded_audio)
+            process_and_display_results(text)
         st.markdown('</div>', unsafe_allow_html=True)
             
     with tabs[3]:
@@ -524,11 +491,8 @@ def main():
         st.markdown('<div class="upload-title" style="color: var(--text-color);">Upload a video file</div>', unsafe_allow_html=True)
         uploaded_video = st.file_uploader("", type=["mp4", "mov", "avi", "mkv"])
         if st.button("Analyze Content", key="analyze_video", use_container_width=True) and uploaded_video:
-            with st.spinner("Analyzing content..."):
-                show_loading()
-                time.sleep(1)  # Simulate loading
-                text = extract_text_from_video(uploaded_video)
-                process_and_display_results(text)
+            text = extract_text_from_video(uploaded_video)
+            process_and_display_results(text)
         st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
