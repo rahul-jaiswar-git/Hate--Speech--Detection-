@@ -165,12 +165,14 @@ def header():
         color: #ffffff;
         margin-bottom: 1rem;
         letter-spacing: 1px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
     .subtitle {
         font-size: 1.4rem;
-        color: #cccccc;
+        color: #ffffff;
         margin-top: 1rem;
         line-height: 1.6;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
     .container {
         max-width: 900px;
@@ -179,13 +181,18 @@ def header():
     }
     .section {
         margin: 4rem 0;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
     }
     .section-title {
         font-size: 2.2rem;
         font-weight: 700;
         margin-bottom: 2rem;
         text-align: center;
-        color: #1a1a1a;
+        color: #ffffff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
     .feature-grid {
         display: grid;
@@ -196,54 +203,61 @@ def header():
     .feature-card {
         text-align: center;
         padding: 2rem;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
         border-radius: 15px;
-        transition: transform 0.2s;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .feature-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
     .feature-title {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         font-weight: 600;
-        margin: 1rem 0;
-        color: #1a1a1a;
+        color: #ffffff;
+        margin-bottom: 1rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
-    .feature-text {
-        color: #666;
-        font-size: 1.1rem;
+    .feature-description {
+        color: #ffffff;
         line-height: 1.6;
+        opacity: 0.9;
     }
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 2rem;
-        margin-bottom: 2rem;
+    .stButton>button {
+        background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+        color: #ffffff;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .stTabs [data-baseweb="tab"] {
-        height: 3.5rem;
-        white-space: pre-wrap;
-        background-color: #f0f2f6;
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    .stTextInput>div>div>input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
         border-radius: 10px;
-        gap: 1rem;
-        padding: 1rem 2rem;
-        font-size: 1.2rem;
-        font-weight: 500;
+        padding: 0.8rem 1rem;
     }
-    .stTabs [aria-selected="true"] {
-        background-color: #1a1a1a;
-        color: white;
+    .stTextInput>div>div>input:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
     }
-    .tab-content {
-        padding: 2rem 0;
+    .stMarkdown {
+        color: #ffffff;
     }
-    .upload-section {
-        text-align: center;
-        margin: 2rem 0;
+    .stProgress>div>div>div {
+        background-color: #4a90e2;
     }
-    .upload-title {
-        font-size: 1.4rem;
-        font-weight: 500;
-        margin-bottom: 1.5rem;
-        color: #1a1a1a;
+    .stProgress>div>div>div>div {
+        background-color: #357abd;
     }
     </style>
     <div class="header">
@@ -266,15 +280,15 @@ def homepage():
             <div class="feature-grid">
                 <div class="feature-card">
                     <div class="feature-title">Real-time Analysis</div>
-                    <div class="feature-text">Instant detection of harmful content across multiple formats</div>
+                    <div class="feature-description">Instant detection of harmful content across multiple formats</div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-title">Multi-format Support</div>
-                    <div class="feature-text">Analyze text, images, audio, and video content</div>
+                    <div class="feature-description">Analyze text, images, audio, and video content</div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-title">Advanced AI</div>
-                    <div class="feature-text">Powered by state-of-the-art machine learning models</div>
+                    <div class="feature-description">Powered by state-of-the-art machine learning models</div>
                 </div>
             </div>
         </div>
