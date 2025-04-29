@@ -26,7 +26,9 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 PERSPECTIVE_API_KEY = os.getenv('PERSPECTIVE_API_KEY', 'YOUR_API_KEY_HERE')  # Replace with your key or set as env var
 PERSPECTIVE_API_URL = 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' + PERSPECTIVE_API_KEY
 PERSPECTIVE_ATTRIBUTES = [
-    "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", "SEXUALLY_EXPLICIT", "OBSCENE"
+    "TOXICITY", "SEVERE_TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", 
+    "SEXUALLY_EXPLICIT", "OBSCENE", "FLIRTATION", "SPAM", "UNSUBSTANTIAL", "HARASSMENT",
+    "HATE_SPEECH", "VIOLENCE", "SELF_HARM"
 ]
 PERSPECTIVE_THRESHOLD = 0.5
 
@@ -259,6 +261,25 @@ def header():
     .stProgress>div>div>div>div {
         background-color: #357abd;
     }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 2.5rem;
+        white-space: pre-wrap;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #ffffff;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #4a90e2;
+        color: #ffffff;
+    }
     </style>
     <div class="header">
         <div class="logo">Hate Shield AI</div>
@@ -358,20 +379,22 @@ def process_and_display_results(text):
     .result-box {
         margin: 3rem 0;
         padding: 2rem;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
         border-radius: 15px;
+        backdrop-filter: blur(10px);
     }
     .result-title {
         font-size: 1.8rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
+        color: #ffffff;
     }
     .score-box {
         margin: 1.5rem 0;
         padding: 1.5rem;
-        background: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .attribute-row {
         margin: 1rem 0;
@@ -383,6 +406,7 @@ def process_and_display_results(text):
         width: 200px;
         font-weight: 500;
         font-size: 1.1rem;
+        color: #ffffff;
     }
     .attribute-score {
         width: 60px;
@@ -392,7 +416,7 @@ def process_and_display_results(text):
     .progress-bar {
         flex-grow: 1;
         height: 12px;
-        background: #e9ecef;
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 6px;
         overflow: hidden;
     }
@@ -400,37 +424,55 @@ def process_and_display_results(text):
         height: 100%;
         border-radius: 6px;
     }
+    .category-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 1.5rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
     </style>
     """, unsafe_allow_html=True)
     
     st.markdown('<div class="result-box">', unsafe_allow_html=True)
     
     if hate_detected:
-        st.markdown('<div class="result-title" style="color:#d32f2f;">Analysis Result: Highly Toxic</div>', unsafe_allow_html=True)
+        st.markdown('<div class="result-title" style="color:#ff6b6b;">Analysis Result: Highly Toxic</div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div class="result-title" style="color:#388e3c;">Analysis Result: Safe</div>', unsafe_allow_html=True)
+        st.markdown('<div class="result-title" style="color:#51cf66;">Analysis Result: Safe</div>', unsafe_allow_html=True)
     
     st.markdown(f"""
     <div class="score-box">
-        <div style="font-size:1.3rem; margin-bottom:0.5rem;"><b>Overall Toxicity Score:</b></div>
-        <div style="font-size:1.8rem; color:#d32f2f; font-weight:700;">{attr_scores.get('TOXICITY', 0)*100:.1f}%</div>
+        <div style="font-size:1.3rem; margin-bottom:0.5rem; color:#ffffff;"><b>Overall Toxicity Score:</b></div>
+        <div style="font-size:1.8rem; color:#ff6b6b; font-weight:700;">{attr_scores.get('TOXICITY', 0)*100:.1f}%</div>
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown('<div style="font-size:1.3rem; margin:1.5rem 0;"><b>Detected Attributes:</b></div>', unsafe_allow_html=True)
+    # Group attributes by category
+    categories = {
+        "Toxicity Metrics": ["TOXICITY", "SEVERE_TOXICITY", "UNSUBSTANTIAL"],
+        "Harmful Content": ["HATE_SPEECH", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT"],
+        "Inappropriate Content": ["SEXUALLY_EXPLICIT", "OBSCENE", "FLIRTATION"],
+        "Safety Concerns": ["VIOLENCE", "SELF_HARM", "HARASSMENT"],
+        "Content Quality": ["SPAM"]
+    }
     
-    for attr in PERSPECTIVE_ATTRIBUTES:
-        score = attr_scores.get(attr, 0)
-        color = get_bar_color(score)
-        st.markdown(f"""
-        <div class="attribute-row">
-            <div class="attribute-name">{attr.replace('_', ' ').title()}</div>
-            <div class="attribute-score" style="color:{color};">{score*100:.1f}%</div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width:{score*100}%; background:{color};"></div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    for category, attrs in categories.items():
+        st.markdown(f'<div class="category-title">{category}</div>', unsafe_allow_html=True)
+        for attr in attrs:
+            if attr in attr_scores:
+                score = attr_scores.get(attr, 0)
+                color = get_bar_color(score)
+                st.markdown(f"""
+                <div class="attribute-row">
+                    <div class="attribute-name">{attr.replace('_', ' ').title()}</div>
+                    <div class="attribute-score" style="color:{color};">{score*100:.1f}%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:{score*100}%; background:{color};"></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
