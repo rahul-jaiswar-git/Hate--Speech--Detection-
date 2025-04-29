@@ -185,108 +185,76 @@ def load_css():
     /* Header Styles */
     .header {
         text-align: center;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
+        padding: 1rem 0;
+        margin-bottom: 1rem;
         background: linear-gradient(135deg, var(--bg-color) 0%, #2d2d2d 100%);
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, rgba(74, 144, 226, 0.1) 0%, rgba(53, 122, 189, 0.1) 100%);
-        z-index: 1;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .logo {
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 800;
         color: var(--text-color);
         margin-bottom: 0.5rem;
         letter-spacing: 1px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        position: relative;
-        z-index: 2;
     }
 
     .subtitle {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: var(--text-color);
         opacity: 0.9;
-        line-height: 1.6;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        position: relative;
-        z-index: 2;
+        line-height: 1.4;
     }
 
     /* Card Styles */
     .card {
         background: var(--card-bg);
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin: 1rem 0;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 0.5rem 0;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
 
     /* Feature Grid */
     .feature-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        margin: 3rem 0;
+        gap: 1rem;
+        margin: 1rem 0;
     }
 
     .feature-card {
         text-align: center;
-        padding: 2rem;
+        padding: 1rem;
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-        border-radius: 15px;
+        border-radius: 10px;
         backdrop-filter: blur(5px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
 
     .feature-title {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--text-color);
-        margin-bottom: 1rem;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin-bottom: 0.5rem;
     }
 
     .feature-description {
         color: var(--text-color);
-        line-height: 1.6;
+        line-height: 1.4;
         opacity: 0.9;
+        font-size: 0.9rem;
     }
 
     /* Section Styles */
     .section-title {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
         font-weight: 700;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         text-align: center;
         color: var(--text-color);
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     /* Button Styles */
@@ -294,16 +262,16 @@ def load_css():
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         color: var(--text-color);
         border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 25px;
+        padding: 0.6rem 1.5rem;
+        border-radius: 20px;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
 
     /* Input Styles */
@@ -311,8 +279,8 @@ def load_css():
         background: var(--card-bg);
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: var(--text-color);
-        border-radius: 10px;
-        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
     }
 
     .stTextInput>div>div>input:focus {
@@ -322,45 +290,16 @@ def load_css():
 
     /* Progress Bar Styles */
     .progress-bar {
-        height: 12px;
+        height: 8px;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
+        border-radius: 4px;
         overflow: hidden;
-        position: relative;
     }
 
     .progress-fill {
         height: 100%;
-        border-radius: 6px;
+        border-radius: 4px;
         transition: width 0.3s ease;
-    }
-
-    /* Tooltip Styles */
-    .tooltip {
-        position: relative;
-        display: inline-block;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 200px;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
     }
 
     /* Mobile Responsive */
@@ -372,7 +311,7 @@ def load_css():
             font-size: 1rem;
         }
         .card {
-            padding: 1rem;
+            padding: 0.8rem;
         }
         .feature-grid {
             grid-template-columns: 1fr;
@@ -408,8 +347,8 @@ def homepage():
     st.markdown("""
     <div class="card">
         <div class="section-title">Welcome to Hate Shield AI</div>
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <p style="font-size: 1.3rem; color: var(--text-color); line-height: 1.8; max-width: 800px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.4; max-width: 800px; margin: 0 auto;">
                 Our AI-powered platform identifies and filters harmful content in real-time across text, images, audio, and video, 
                 protecting your community and fostering positive online interactions.
             </p>
