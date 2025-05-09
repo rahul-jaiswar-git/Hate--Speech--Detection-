@@ -14,47 +14,32 @@
 
 Hate speech detection is the process of identifying and flagging content that is toxic, offensive, or harmful. This project leverages the Perspective API to analyze content for various toxicity attributes, supporting multiple input types (text, image, audio, video) by extracting text and running it through the API.
 
-## 🚀 **Key Features**
+## 🚀 Key Features
 
-<div align="center">
+### 🧠 Multi-Modal Detection
+- **Text Analysis** 📝 — Detect hate speech in plain text.
+- **Image Analysis** 🖼️ — Extract text from images (OCR) and analyze for toxicity.
+- **Audio Analysis** 🔊 — Convert speech to text and analyze for hate speech.
+- **Video Analysis** 🎥 — Extract audio, transcribe speech, and analyze for toxicity.
 
-<table>
-  <tr>
-    <td align="center" width="220">
-      <b>🧠 Multi-Modal Detection</b><br>
-      <sub>Detect hate speech from:</sub><br>
-      <ul align="left">
-        <li><b>Text</b> 📝</li>
-        <li><b>Images</b> 🖼️ (OCR)</li>
-        <li><b>Audio</b> 🔊 (Speech-to-Text)</li>
-        <li><b>Video</b> 🎥 (Speech-to-Text)</li>
-      </ul>
-    </td>
-    <td align="center" width="220">
-      <b>📊 Detailed Toxicity Analysis</b><br>
-      <sub>Analyze multiple attributes:</sub><br>
-      <ul align="left">
-        <li><b>Toxicity</b> 🚫</li>
-        <li><b>Insult</b> 😠</li>
-        <li><b>Profanity</b> 💢</li>
-        <li><b>Threat</b> ⚔️</li>
-        <li><b>Identity Attack</b> 👥</li>
-        <li><b>Sexually Explicit</b> 🔞</li>
-        <li><b>Obscene</b> 🚯</li>
-        <li><b>Flirtation</b> 💝</li>
-        <li><b>Spam</b> 📧</li>
-      </ul>
-    </td>
-    <td align="center" width="220">
-      <b>📥 Downloadable PDF Reports</b><br>
-      <sub>Get a full analysis report for your content.</sub><br><br>
-      <b>🗣️ User Feedback</b><br>
-      <sub>Help us improve by submitting feedback on results.</sub>
-    </td>
-  </tr>
-</table>
+### 📊 Detailed Toxicity Analysis
+- Analyze multiple attributes using the Perspective API:
+  - **Toxicity** 🚫
+  - **Insult** 😠
+  - **Profanity** 💢
+  - **Threat** ⚔️
+  - **Identity Attack** 👥
+  - **Sexually Explicit** 🔞
+  - **Obscene** 🚯
+  - **Flirtation** 💝
+  - **Spam** 📧
+- Visualize results with interactive charts and progress bars.
 
-</div>
+### 📥 Downloadable PDF Reports
+- Generate and download a comprehensive PDF report of your analysis.
+
+### 🗣️ User Feedback
+- Submit feedback on analysis results to help improve the system.
 
 ---
 
@@ -153,4 +138,8 @@ project/
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📢 Project Note
+
+This project is an extension and evolution of the original [Hate-Shield-AI](https://github.com/rahul-jaiswar-git/Hate-Shield-AI) repository. While the original project focused on multi-modal hate speech detection for Hinglish using deep learning, this project aims to push the boundaries further by implementing a more modern, SaaS-ready, and user-friendly approach. It leverages the Perspective API for scalable, real-time toxicity analysis across text, images, audio, and video, and introduces enhanced reporting, feedback, and analytics features for a next-generation content moderation experience. 
